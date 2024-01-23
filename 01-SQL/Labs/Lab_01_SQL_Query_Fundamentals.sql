@@ -1,21 +1,23 @@
 -- ------------------------------------------------------------------
 -- 0). First, How Many Rows are in the Products Table?
 -- ------------------------------------------------------------------
-
+SELECT COUNT(*) AS RowCount FROM northwind.products;
 
 -- ------------------------------------------------------------------
 -- 1). Product Name and Unit/Quantity
 -- ------------------------------------------------------------------
+SELECT `product_name`, `quantity_per_unit` FROM `northwind`.`products`;
 
 
 -- ------------------------------------------------------------------
 -- 2). Product ID and Name of Current Products
 -- ------------------------------------------------------------------
-
+SELECT id , `product_name` FROM northwind.products;
 
 -- ------------------------------------------------------------------
 -- 3). Product ID and Name of Discontinued Products
 -- ------------------------------------------------------------------
+SELECT id , `product_name` FROM `northwind`.`products` WHERE discontinued = 1;
 
 
 -- ------------------------------------------------------------------
