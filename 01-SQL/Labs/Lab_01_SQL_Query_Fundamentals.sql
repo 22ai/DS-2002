@@ -18,9 +18,10 @@ SELECT id , `product_name` FROM northwind.products;
 -- 3). Product ID and Name of Discontinued Products
 -- ------------------------------------------------------------------
 SELECT id , `product_name` FROM `northwind`.`products` WHERE discontinued = 1;
+-- not correct  
 
 
--- ------------------------------------------------------------------
+------------------------------------------------------------------
 -- 4). Name & List Price of Most & Least Expensive Products
 -- ------------------------------------------------------------------
 
