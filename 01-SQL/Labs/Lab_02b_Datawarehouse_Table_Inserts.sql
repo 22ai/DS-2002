@@ -5,8 +5,6 @@
 -- ----------------------------------------------
 -- Populate dim_customers
 -- ----------------------------------------------
-TRUNCATE TABLE northwind_dw.dim_customers;
-
 INSERT INTO `northwind_dw`.`dim_customers`
 (`customer_id`,
 `company`,
@@ -21,17 +19,17 @@ INSERT INTO `northwind_dw`.`dim_customers`
 `zip_postal_code`,
 `country_region`)
 SELECT `id`,
-	`company`,
-	`last_name`,
-	`first_name`,
-	`job_title`,
-	`business_phone`,
-	`fax_number`,
-	`address`,
-	`city`,
-	`state_province`,
-	`zip_postal_code`,
-	`country_region`
+`company`,
+`last_name`,
+`first_name`,
+`job_title`,
+`business_phone`,
+`fax_number`,
+`address`,
+`city`,
+`state_province`,
+`zip_postal_code`,
+`country_region`
 FROM northwind.customers;
 
 -- ----------------------------------------------
@@ -43,9 +41,7 @@ SELECT * FROM northwind_dw.dim_customers;
 -- ----------------------------------------------
 -- Populate dim_employees
 -- ----------------------------------------------
-TRUNCATE TABLE `northwind_dw`.`dim_employees`;
-
-INSERT INTO `northwind_dw`.`dim_employees`
+INSERT INTO `Northwind_dw`.`dim_employees`
 (`employee_id`,
 `company`,
 `last_name`,
@@ -61,23 +57,22 @@ INSERT INTO `northwind_dw`.`dim_employees`
 `zip_postal_code`,
 `country_region`,
 `web_page`)
-SELECT `id`,
-    `company`,
-    `last_name`,
-    `first_name`,
-    `email_address`,
-    `job_title`,
-    `business_phone`,
-    `home_phone`,
-    `fax_number`,
-    `address`,
-    `city`,
-    `state_province`,
-    `zip_postal_code`,
-    `country_region`,
-    `web_page`
+SELECT `employees`.`id`,
+    `employees`.`company`,
+    `employees`.`last_name`,
+    `employees`.`first_name`,
+    `employees`.`email_address`,
+    `employees`.`job_title`,
+    `employees`.`business_phone`,
+    `employees`.`home_phone`,
+    `employees`.`fax_number`,
+    `employees`.`address`,
+    `employees`.`city`,
+    `employees`.`state_province`,
+    `employees`.`zip_postal_code`,
+    `employees`.`country_region`,
+    `employees`.`web_page`
 FROM `northwind`.`employees`;
-
 -- ----------------------------------------------
 -- Validate that the Data was Inserted ----------
 -- ----------------------------------------------
@@ -87,10 +82,8 @@ SELECT * FROM northwind_dw.dim_employees;
 -- ----------------------------------------------
 -- Populate dim_products
 -- ----------------------------------------------
-TRUNCATE TABLE `northwind_dw`.`dim_products`;
-
 INSERT INTO `northwind_dw`.`dim_products`
-(`product_id`,
+(`product_key`,
 `product_code`,
 `product_name`,
 `standard_cost`,
@@ -112,10 +105,8 @@ SELECT * FROM northwind_dw.dim_products;
 -- ----------------------------------------------
 -- Populate dim_shippers
 -- ----------------------------------------------
-TRUNCATE TABLE `northwind_dw`.`dim_shippers`;
-
 INSERT INTO `northwind_dw`.`dim_shippers`
-(`shipper_id`,
+(`shipper_key`,
 `company`,
 `address`,
 `city`,
@@ -134,26 +125,65 @@ SELECT * FROM northwind_dw.dim_shippers;
 -- ----------------------------------------------
 -- Populate fact_orders
 -- ----------------------------------------------
-TRUNCATE TABLE `northwind_dw`.`fact_orders`;
+#how to match product id w/order table? purchase orders table?
 
 INSERT INTO `northwind_dw`.`fact_orders`
 (`order_id`,
-`customer_id`,
 `employee_id`,
-`product_id`,
-`shipper_id`,
+`customer_id`,
+ product_id,
 `order_date`,
-`paid_date`,
+ paid_date,
 `shipped_date`,
-`payment_type`,
+ payment_type,
+ shipper_id,
 `shipping_fee`,
-`quantity`,
-`unit_price`,
-`discount`,
-`taxes`,
+ quantity,
+ unit_price,
+ discount,
 `tax_rate`,
 `order_status`,
-`order_details_status`);
+`order_details_status`)
+SELECT `orders`.`id`,
+    `orders`.`employee_id`,
+    `orders`.`customer_id`,
+    `purchase_order_details`.`product_id`,
+    `orders`.`order_date`,
+    `orders`.`paid_date`,
+    `orders`.`shipped_date`,
+    `orders`.`payment_type`,
+    `orders`.`shipper_id`,
+    `orders`.`shipping_fee`,
+    `orders`.`quantity`,
+    `orders`.`unit_price`,
+    `orders`.`discount`,
+    `orders`.`tax_rate`,
+    `orders_status`.`status_name` AS order_status,
+     order_details_status.status_name AS order_details_status
+FROM `northwind`.`orders`
+INNER JOIN northwind.products
+ON purchase_order_details.product_id = products.product_id
+INNER JOIN northwind.orders_status
+ON orders.status_id = orders_status.id
+RIGHT OUTER JOIN northwind.order_details
+ON northwind.orders.id = northwind.order_details.order_id
+INNER JOIN northwind.order_details_status
+ON order_details.status_id = order_details_status.id;
+
+
+-- SELECT `order_details`.`id`,
+--     `order_details`.`order_id`,
+--     `order_details`.`product_id`,
+--     `order_details`.`quantity`,
+--     `order_details`.`unit_price`,
+--     `order_details`.`discount`,
+--     order_details_status.status_name AS order_details_status,
+--     `order_details`.`purchase_order_id`,
+--     `order_details`.`inventory_id`
+-- FROM `northwind`.`order_details`
+-- INNER JOIN northwind.order_details_status
+-- ON order_details.status_id = order_details_status.id;
+
 
 /* 
 --------------------------------------------------------------------------------------------------
@@ -172,19 +202,3 @@ TODO: Write a SELECT Statement that:
 -- Validate that the Data was Inserted ----------
 -- ----------------------------------------------
 SELECT * FROM northwind_dw.fact_orders;
-
-
-
--- ----------------------------------------------
--- ----------------------------------------------
--- Next, create the date dimension and then -----
--- integrate the date, customer, employee -------
--- product and shipper dimension tables ---------
--- ----------------------------------------------
--- ----------------------------------------------
-
-
--- --------------------------------------------------------------------------------------------------
--- LAB QUESTION: Author a SQL query that returns the total (sum) of the quantity and unit price
--- for each customer (last name), sorted by the total unit price in descending order.
--- --------------------------------------------------------------------------------------------------
