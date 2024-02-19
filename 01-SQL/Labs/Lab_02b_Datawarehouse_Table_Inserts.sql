@@ -5,6 +5,8 @@
 -- ----------------------------------------------
 -- Populate dim_customers
 -- ----------------------------------------------
+TRUNCATE TABLE northwind_dw.dim_customers;
+
 INSERT INTO `northwind_dw`.`dim_customers`
 (`customer_id`,
 `company`,
@@ -19,17 +21,17 @@ INSERT INTO `northwind_dw`.`dim_customers`
 `zip_postal_code`,
 `country_region`)
 SELECT `id`,
-`company`,
-`last_name`,
-`first_name`,
-`job_title`,
-`business_phone`,
-`fax_number`,
-`address`,
-`city`,
-`state_province`,
-`zip_postal_code`,
-`country_region`
+	`company`,
+	`last_name`,
+	`first_name`,
+	`job_title`,
+	`business_phone`,
+	`fax_number`,
+	`address`,
+	`city`,
+	`state_province`,
+	`zip_postal_code`,
+	`country_region`
 FROM northwind.customers;
 
 -- ----------------------------------------------
@@ -57,21 +59,21 @@ INSERT INTO `Northwind_dw`.`dim_employees`
 `zip_postal_code`,
 `country_region`,
 `web_page`)
-SELECT `employees`.`id`,
-    `employees`.`company`,
-    `employees`.`last_name`,
-    `employees`.`first_name`,
-    `employees`.`email_address`,
-    `employees`.`job_title`,
-    `employees`.`business_phone`,
-    `employees`.`home_phone`,
-    `employees`.`fax_number`,
-    `employees`.`address`,
-    `employees`.`city`,
-    `employees`.`state_province`,
-    `employees`.`zip_postal_code`,
-    `employees`.`country_region`,
-    `employees`.`web_page`
+SELECT `id`,
+    `company`,
+    `last_name`,
+    `first_name`,
+    `email_address`,
+    `job_title`,
+    `business_phone`,
+    `home_phone`,
+    `fax_number`,
+    `address`,
+    `city`,
+    `state_province`,
+    `zip_postal_code`,
+    `country_region`,
+    `web_page`
 FROM `northwind`.`employees`;
 -- ----------------------------------------------
 -- Validate that the Data was Inserted ----------
@@ -82,8 +84,10 @@ SELECT * FROM northwind_dw.dim_employees;
 -- ----------------------------------------------
 -- Populate dim_products
 -- ----------------------------------------------
+TRUNCATE TABLE `northwind_dw`.`dim_products`;
+
 INSERT INTO `northwind_dw`.`dim_products`
-(`product_key`,
+(`product_id`,
 `product_code`,
 `product_name`,
 `standard_cost`,
@@ -105,8 +109,10 @@ SELECT * FROM northwind_dw.dim_products;
 -- ----------------------------------------------
 -- Populate dim_shippers
 -- ----------------------------------------------
+TRUNCATE TABLE `northwind_dw`.`dim_shippers`;
+
 INSERT INTO `northwind_dw`.`dim_shippers`
-(`shipper_key`,
+(`shipper_id`,
 `company`,
 `address`,
 `city`,
@@ -202,3 +208,19 @@ TODO: Write a SELECT Statement that:
 -- Validate that the Data was Inserted ----------
 -- ----------------------------------------------
 SELECT * FROM northwind_dw.fact_orders;
+
+
+
+-- ----------------------------------------------
+-- ----------------------------------------------
+-- Next, create the date dimension and then -----
+-- integrate the date, customer, employee -------
+-- product and shipper dimension tables ---------
+-- ----------------------------------------------
+-- ----------------------------------------------
+
+
+-- --------------------------------------------------------------------------------------------------
+-- LAB QUESTION: Author a SQL query that returns the total (sum) of the quantity and unit price
+-- for each customer (last name), sorted by the total unit price in descending order.
+-- --------------------------------------------------------------------------------------------------

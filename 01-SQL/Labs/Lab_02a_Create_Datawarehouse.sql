@@ -19,6 +19,7 @@ CREATE TABLE `dim_customers` (
   `zip_postal_code` varchar(15) DEFAULT NULL,
   `country_region` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`customer_key`),
+  KEY `customer_id` (`customer_id`),
   KEY `city` (`city`),
   KEY `company` (`company`),
   KEY `first_name` (`first_name`),
@@ -47,6 +48,7 @@ CREATE TABLE `dim_employees` (
   `country_region` varchar(50) DEFAULT NULL,
   `web_page` longtext,
   PRIMARY KEY (`employee_key`),
+  KEY `employee_id` (`employee_id`),
   KEY `city` (`city`),
   KEY `company` (`company`),
   KEY `first_name` (`first_name`),
@@ -71,7 +73,10 @@ CREATE TABLE `dim_products` (
   `minimum_reorder_quantity` int DEFAULT NULL,
   `category` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`product_key`),
-  KEY `product_code` (`product_code`)
+  KEY `product_id` (`product_id`),
+  KEY `product_code` (`product_code`),
+  KEY `discontinued` (`discontinued`),
+  KEY `category` (`category`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4;
 
 
@@ -86,6 +91,7 @@ CREATE TABLE `dim_shippers` (
   `zip_postal_code` varchar(15) DEFAULT NULL,
   `country_region` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`shipper_key`),
+  KEY `shipper_id` (`shipper_id`),
   KEY `city` (`city`),
   KEY `company` (`company`),
   KEY `zip_postal_code` (`zip_postal_code`),
@@ -102,6 +108,7 @@ CREATE TABLE `dim_suppliers` (
   `first_name` varchar(50) DEFAULT NULL,
   `job_title` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`supplier_key`),
+  KEY `supplier_id` (`supplier_id`),
   KEY `company` (`company`),
   KEY `first_name` (`first_name`),
   KEY `last_name` (`last_name`),
