@@ -1,11 +1,12 @@
-# DROP database `northwind_dw`;
+DROP database `Northwind_dw`;
 CREATE DATABASE `Northwind_dw` /*!40100 DEFAULT CHARACTER SET latin1 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
-USE Northwind_DW3;
+USE Northwind_dw;
 
 # DROP TABLE `dim_customers`;
 CREATE TABLE `dim_customers` (
   `customer_key` int NOT NULL AUTO_INCREMENT,
+  `customer_id` int NOT NULL,
   `company` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
   `first_name` varchar(50) DEFAULT NULL,
@@ -30,6 +31,7 @@ CREATE TABLE `dim_customers` (
 # DROP TABLE `dim_employees`;
 CREATE TABLE `dim_employees` (
   `employee_key` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
   `company` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
   `first_name` varchar(50) DEFAULT NULL,
@@ -57,6 +59,7 @@ CREATE TABLE `dim_employees` (
 # DROP TABLE `dim_products`;
 CREATE TABLE `dim_products` (
   `product_key` int NOT NULL AUTO_INCREMENT,
+  `product_id` int NOT NULL,
   `product_code` varchar(25) DEFAULT NULL,
   `product_name` varchar(50) DEFAULT NULL,
   `standard_cost` decimal(19,4) DEFAULT '0.0000',
@@ -75,6 +78,7 @@ CREATE TABLE `dim_products` (
 # DROP TABLE `dim_shippers`;
 CREATE TABLE `dim_shippers` (
   `shipper_key` int NOT NULL AUTO_INCREMENT,
+  `shipper_id` int NOT NULL,
   `company` varchar(50) DEFAULT NULL,
   `address` longtext,
   `city` varchar(50) DEFAULT NULL,
@@ -92,6 +96,7 @@ CREATE TABLE `dim_shippers` (
 # DROP TABLE `dim_suppliers`;
 CREATE TABLE `dim_suppliers` (
   `supplier_key` int NOT NULL AUTO_INCREMENT,
+  `supplier_id` int NOT NULL,
   `company` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
   `first_name` varchar(50) DEFAULT NULL,
@@ -99,7 +104,8 @@ CREATE TABLE `dim_suppliers` (
   PRIMARY KEY (`supplier_key`),
   KEY `company` (`company`),
   KEY `first_name` (`first_name`),
-  KEY `last_name` (`last_name`)
+  KEY `last_name` (`last_name`),
+  KEY `job_title` (`job_title`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
 
 
@@ -109,4 +115,32 @@ CREATE TABLE `dim_suppliers` (
 -- To keep things simple, don't include purchase order or inventory info
 -- ----------------------------------------------------------------------
 # DROP TABLE `fact_orders`;
-CREATE TABLE `fact_orders`;
+# CREATE TABLE `fact_orders`;
+CREATE TABLE `fact_orders` (
+  `order_key` int NOT NULL AUTO_INCREMENT,
+  `order_id` int NOT NULL,
+  `employee_id` int NOT NULL,
+  `customer_id` int NOT NULL,
+  `product_id` int DEFAULT NULL,
+  `shipper_id` int,
+  `order_date` datetime,
+  `paid_date` datetime,
+  `shipped_date` datetime,
+  `payment_type` varchar(50),
+  `shipping_fee` decimal(19,4),
+  `quantity` decimal(18,4) NOT NULL DEFAULT '0.0000',
+  `unit_price` decimal(19,4) DEFAULT '0.0000',
+  `discount` double NOT NULL DEFAULT '0',
+  `taxes` decimal(19,4),
+  `tax_rate` double,
+  `order_status` varchar(50),
+  `order_details_status` int DEFAULT NULL,
+  PRIMARY KEY (`order_key`),
+  KEY `order_id` (`order_id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `customer_id` (`customer_id`),
+  KEY `product_id` (`product_id`),
+  KEY `shipper_id` (`shipper_id`),
+  KEY `order_status` (`order_status`),
+  KEY `order_details_status` (`order_details_status`)
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb3;

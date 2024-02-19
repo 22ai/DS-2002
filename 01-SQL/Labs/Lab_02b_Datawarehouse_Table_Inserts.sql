@@ -6,7 +6,7 @@
 -- Populate dim_customers
 -- ----------------------------------------------
 INSERT INTO `northwind_dw`.`dim_customers`
-(`customer_key`,
+(`customer_id`,
 `company`,
 `last_name`,
 `first_name`,
@@ -41,8 +41,8 @@ SELECT * FROM northwind_dw.dim_customers;
 -- ----------------------------------------------
 -- Populate dim_employees
 -- ----------------------------------------------
-INSERT INTO `northwind_dw`.`dim_employees`
-(`employee_key`,
+INSERT INTO `Northwind_dw`.`dim_employees`
+(`employee_id`,
 `company`,
 `last_name`,
 `first_name`,
@@ -73,7 +73,6 @@ SELECT `employees`.`id`,
     `employees`.`country_region`,
     `employees`.`web_page`
 FROM `northwind`.`employees`;
-
 -- ----------------------------------------------
 -- Validate that the Data was Inserted ----------
 -- ----------------------------------------------
@@ -126,30 +125,66 @@ SELECT * FROM northwind_dw.dim_shippers;
 -- ----------------------------------------------
 -- Populate fact_orders
 -- ----------------------------------------------
+#how to match product id w/order table? purchase orders table?
+
 INSERT INTO `northwind_dw`.`fact_orders`
-(`order_key`,
-`employee_key`,
-`customer_key`,
-`product_key`,
-`shipper_key`,
-`ship_name`,
-`ship_address`,
-`ship_city`,
-`ship_state_province`,
-`ship_zip_postal_code`,
-`ship_country_region`,
-`quantity`,
+(`order_id`,
+`employee_id`,
+`customer_id`,
+ product_id,
 `order_date`,
+ paid_date,
 `shipped_date`,
-`unit_price`,
-`discount`,
+ payment_type,
+ shipper_id,
 `shipping_fee`,
-`taxes`,
-`payment_type`,
-`paid_date`,
+ quantity,
+ unit_price,
+ discount,
 `tax_rate`,
 `order_status`,
 `order_details_status`)
+SELECT `orders`.`id`,
+    `orders`.`employee_id`,
+    `orders`.`customer_id`,
+    `purchase_order_details`.`product_id`,
+    `orders`.`order_date`,
+    `orders`.`paid_date`,
+    `orders`.`shipped_date`,
+    `orders`.`payment_type`,
+    `orders`.`shipper_id`,
+    `orders`.`shipping_fee`,
+    `orders`.`quantity`,
+    `orders`.`unit_price`,
+    `orders`.`discount`,
+    `orders`.`tax_rate`,
+    `orders_status`.`status_name` AS order_status,
+     order_details_status.status_name AS order_details_status
+FROM `northwind`.`orders`
+INNER JOIN northwind.products
+ON purchase_order_details.product_id = products.product_id
+INNER JOIN northwind.orders_status
+ON orders.status_id = orders_status.id
+RIGHT OUTER JOIN northwind.order_details
+ON northwind.orders.id = northwind.order_details.order_id
+INNER JOIN northwind.order_details_status
+ON order_details.status_id = order_details_status.id;
+
+
+-- SELECT `order_details`.`id`,
+--     `order_details`.`order_id`,
+--     `order_details`.`product_id`,
+--     `order_details`.`quantity`,
+--     `order_details`.`unit_price`,
+--     `order_details`.`discount`,
+--     order_details_status.status_name AS order_details_status,
+--     `order_details`.`purchase_order_id`,
+--     `order_details`.`inventory_id`
+-- FROM `northwind`.`order_details`
+-- INNER JOIN northwind.order_details_status
+-- ON order_details.status_id = order_details_status.id;
+
+
 /* 
 --------------------------------------------------------------------------------------------------
 TODO: Write a SELECT Statement that:
