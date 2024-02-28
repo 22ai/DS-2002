@@ -1,7 +1,7 @@
-# DROP database `northwind_dw`;
-CREATE DATABASE `northwind_dw` /*!40100 DEFAULT CHARACTER SET latin1 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+DROP database `Northwind_dw`;
+CREATE DATABASE `Northwind_dw` /*!40100 DEFAULT CHARACTER SET latin1 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
-USE northwind_dw;
+USE Northwind_dw;
 
 # DROP TABLE `dim_customers`;
 CREATE TABLE `dim_customers` (
@@ -19,7 +19,6 @@ CREATE TABLE `dim_customers` (
   `zip_postal_code` varchar(15) DEFAULT NULL,
   `country_region` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`customer_key`),
-  KEY `customer_id` (`customer_id`),
   KEY `city` (`city`),
   KEY `company` (`company`),
   KEY `first_name` (`first_name`),
@@ -48,7 +47,6 @@ CREATE TABLE `dim_employees` (
   `country_region` varchar(50) DEFAULT NULL,
   `web_page` longtext,
   PRIMARY KEY (`employee_key`),
-  KEY `employee_id` (`employee_id`),
   KEY `city` (`city`),
   KEY `company` (`company`),
   KEY `first_name` (`first_name`),
@@ -73,10 +71,7 @@ CREATE TABLE `dim_products` (
   `minimum_reorder_quantity` int DEFAULT NULL,
   `category` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`product_key`),
-  KEY `product_id` (`product_id`),
-  KEY `product_code` (`product_code`),
-  KEY `discontinued` (`discontinued`),
-  KEY `category` (`category`)
+  KEY `product_code` (`product_code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4;
 
 
@@ -91,7 +86,6 @@ CREATE TABLE `dim_shippers` (
   `zip_postal_code` varchar(15) DEFAULT NULL,
   `country_region` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`shipper_key`),
-  KEY `shipper_id` (`shipper_id`),
   KEY `city` (`city`),
   KEY `company` (`company`),
   KEY `zip_postal_code` (`zip_postal_code`),
@@ -108,10 +102,10 @@ CREATE TABLE `dim_suppliers` (
   `first_name` varchar(50) DEFAULT NULL,
   `job_title` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`supplier_key`),
-  KEY `supplier_id` (`supplier_id`),
   KEY `company` (`company`),
   KEY `first_name` (`first_name`),
-  KEY `last_name` (`last_name`)
+  KEY `last_name` (`last_name`),
+  KEY `job_title` (`job_title`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
 
 
@@ -121,4 +115,32 @@ CREATE TABLE `dim_suppliers` (
 -- To keep things simple, don't include purchase order or inventory info
 -- ----------------------------------------------------------------------
 # DROP TABLE `fact_orders`;
-CREATE TABLE `fact_orders`;
+# CREATE TABLE `fact_orders`;
+CREATE TABLE `fact_orders` (
+  `order_key` int NOT NULL AUTO_INCREMENT,
+  `order_id` int NOT NULL,
+  `employee_id` int NOT NULL,
+  `customer_id` int NOT NULL,
+  `product_id` int DEFAULT NULL,
+  `shipper_id` int,
+  `order_date` datetime,
+  `paid_date` datetime,
+  `shipped_date` datetime,
+  `payment_type` varchar(50),
+  `shipping_fee` decimal(19,4),
+  `quantity` decimal(18,4) NOT NULL DEFAULT '0.0000',
+  `unit_price` decimal(19,4) DEFAULT '0.0000',
+  `discount` double NOT NULL DEFAULT '0',
+  `taxes` decimal(19,4),
+  `tax_rate` double,
+  `order_status` varchar(50),
+  `order_details_status` int DEFAULT NULL,
+  PRIMARY KEY (`order_key`),
+  KEY `order_id` (`order_id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `customer_id` (`customer_id`),
+  KEY `product_id` (`product_id`),
+  KEY `shipper_id` (`shipper_id`),
+  KEY `order_status` (`order_status`),
+  KEY `order_details_status` (`order_details_status`)
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb3;
